@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>かえるサポート ルールガイド</title>
+<style>
+  :root{
+    --green-50:#f1f8f0;
+    --green-100:#dff0db;
+    --green-200:#bfe0b8;
+    --green-300:#92cc89;
+    --green-500:#4f9e52;
+    --green-600:#3d8240;
+    --green-700:#2f6531;
+    --green-900:#1f4321;
+    --ink:#28332a;
+    --ink-soft:#5b6b5e;
+    --bg:#f7faf6;
+    --surface:#ffffff;
+    --surface-soft:#eef6ec;
+    --border:#dbe7d8;
+    --shadow: 0 2px 10px rgba(47,101,49,0.07);
+    --radius:14px;
+    --accent-trouble:#c97a2c;
+    --accent-kms:#3d7a8a;
+    --sidebar-w:272px;
+    --transition:0.18s ease;
+  }
+
+  [data-theme="dark"]{
+    --green-50:#16201a;
+    --green-100:#1d2c20;
+    --green-200:#274030;
+    --green-300:#3a5c40;
+    --green-500:#6cbf6f;
+    --green-600:#79cc7d;
+    --green-700:#9adf9d;
+    --green-900:#dff0db;
+    --ink:#e7f0e6;
+    --ink-soft:#a7b8ac;
+    --bg:#111713;
+    --surface:#18211b;
+    --surface-soft:#1c271f;
+    --border:#2a3a2e;
+    --shadow: 0 2px 14px rgba(0,0,0,0.35);
+    --accent-trouble:#e0a05c;
+    --accent-kms:#7fb8c8;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Hiragino Sans","Noto Sans JP","Helvetica Neue",Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    transition:background var(--transition), color var(--transition);
+    line-height:1.7;
+  }
+
+  a{color:inherit;}
+
+  /* ===== Layout shell ===== */
+  .app{
+    display:flex;
+    min-height:100vh;
+  }
+
+  /* ===== Sidebar ===== */
+  .sidebar{
+    width:var(--sidebar-w);
+    flex-shrink:0;
+    background:var(--surface);
+    border-right:1px solid var(--border);
+    padding:20px 16px 24px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    position:fixed;
+    top:0;
+    left:0;
+    height:100vh;
+    overflow-y:auto;
+    transform:translateX(0);
+    transition:transform var(--transition), background var(--transition);
+    z-index:100;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:4px 4px 8px;
+  }
+  .brand-frog{
+    font-size:26px;
+    line-height:1;
+  }
+  .brand-text{
+    font-size:14px;
+    font-weight:700;
+    color:var(--green-700);
+    letter-spacing:0.02em;
+  }
+  .brand-text span{
+    display:block;
+    font-size:11px;
+    font-weight:500;
+    color:var(--ink-soft);
+    margin-top:2px;
+  }
+
+  .search-wrap{
+    position:relative;
+  }
+  .search-input{
+    width:100%;
+    padding:10px 14px 10px 36px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:var(--surface-soft);
+    color:var(--ink);
+    font-size:13.5px;
+    outline:none;
+    transition:border-color var(--transition), background var(--transition);
+  }
+  .search-input:focus{
+    border-color:var(--green-500);
+    background:var(--surface);
+  }
+  .search-icon{
+    position:absolute;
+    left:11px;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:14px;
+    color:var(--ink-soft);
+    pointer-events:none;
+  }
+
+  .nav-section{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .nav-label{
+    font-size:11px;
+    font-weight:700;
+    color:var(--ink-soft);
+    letter-spacing:0.08em;
+    padding:10px 10px 4px;
+    text-transform:uppercase;
+  }
+  .nav-link{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:9px 10px;
+    border-radius:9px;
+    font-size:13.5px;
+    font-weight:500;
+    color:var(--ink);
+    text-decoration:none;
+    cursor:pointer;
+    transition:background var(--transition), color var(--transition);
+    border:none;
+    background:none;
+    text-align:left;
+    width:100%;
+  }
+  .nav-link:hover{
+    background:var(--surface-soft);
+  }
+  .nav-link.active{
+    background:var(--green-100);
+    color:var(--green-700);
+    font-weight:700;
+  }
+  .nav-icon{
+    font-size:15px;
+    width:20px;
+    text-align:center;
+    flex-shrink:0;
+  }
+
+  /* Module accordion in sidebar */
+  .module-tree{
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+  }
+  .module-toggle{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:8px 10px;
+    border-radius:9px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    background:none;
+    border:none;
+    color:var(--ink);
+    width:100%;
+    text-align:left;
+    transition:background var(--transition);
+  }
+  .module-toggle:hover{
+    background:var(--surface-soft);
+  }
+  .module-toggle .chevron{
+    margin-left:auto;
+    font-size:11px;
+    transition:transform var(--transition);
+    color:var(--ink-soft);
+  }
+  .module-toggle.open .chevron{
+    transform:rotate(90deg);
+  }
+  .module-num-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:26px;
+    height:20px;
+    padding:0 5px;
+    border-radius:6px;
+    background:var(--green-100);
+    color:var(--green-700);
+    font-size:11px;
+    font-weight:700;
+    flex-shrink:0;
+  }
+  .submodule-list{
+    display:none;
+    flex-direction:column;
+    gap:1px;
+    padding-left:30px;
+    margin:1px 0 4px;
+  }
+  .submodule-list.open{
+    display:flex;
+  }
+  .submodule-list a{
+    display:block;
+    padding:6px 10px;
+    border-radius:8px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    text-decoration:none;
+    transition:background var(--transition), color var(--transition);
+  }
+  .submodule-list a:hover{
+    background:var(--surface-soft);
+    color:var(--ink);
+  }
+
+  .sidebar-footer{
+    margin-top:auto;
+    padding-top:10px;
+    border-top:1px solid var(--border);
+  }
+  .theme-toggle{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:9px 10px;
+    border-radius:9px;
+    font-size:13px;
+    font-weight:600;
+    background:var(--surface-soft);
+    border:1px solid var(--border);
+    color:var(--ink);
+    cursor:pointer;
+    width:100%;
+    transition:background var(--transition);
+  }
+  .theme-toggle:hover{
+    background:var(--green-100);
+  }
+
+  /* ===== Mobile sidebar control ===== */
+  .menu-btn{
+    display:none;
+    align-items:center;
+    gap:8px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    color:var(--ink);
+    border-radius:10px;
+    padding:9px 14px;
+    font-size:13.5px;
+    font-weight:600;
+    cursor:pointer;
+    position:fixed;
+    top:14px;
+    left:14px;
+    z-index:120;
+    box-shadow:var(--shadow);
+  }
+  .sidebar-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.4);
+    z-index:99;
+  }
+
+  /* ===== Main content ===== */
+  .main{
+    margin-left:var(--sidebar-w);
+    flex:1;
+    min-width:0;
+    padding:32px 36px 60px;
+  }
+
+  .top-search-mobile{
+    display:none;
+  }
+
+  /* ===== Hero ===== */
+  .hero{
+    background:linear-gradient(135deg, var(--green-600), var(--green-500));
+    border-radius:18px;
+    padding:34px 32px;
+    color:#fff;
+    margin-bottom:28px;
+    position:relative;
+    overflow:hidden;
+  }
+  [data-theme="dark"] .hero{
+    background:linear-gradient(135deg, var(--green-700), var(--green-500));
+    color:#102015;
+  }
+  .hero-frog{
+    font-size:34px;
+    margin-bottom:6px;
+  }
+  .hero h1{
+    margin:0 0 8px;
+    font-size:24px;
+    font-weight:800;
+    letter-spacing:0.01em;
+  }
+  .hero p{
+    margin:0;
+    font-size:14.5px;
+    opacity:0.95;
+    max-width:620px;
+  }
+  .hero .hero-note{
+    display:inline-block;
+    margin-top:14px;
+    background:rgba(255,255,255,0.18);
+    border-radius:999px;
+    padding:7px 16px;
+    font-size:13px;
+    font-weight:700;
+  }
+  [data-theme="dark"] .hero .hero-note{
+    background:rgba(16,32,21,0.18);
+  }
+
+  /* ===== Section headers ===== */
+  .section{
+    margin-bottom:38px;
+  }
+  .section-header{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:6px;
+    flex-wrap:wrap;
+  }
+  .section-header h2{
+    font-size:18px;
+    font-weight:800;
+    margin:0;
+    color:var(--green-700);
+  }
+  .section-desc{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:0 0 16px;
+  }
+
+  /* ===== Scene grid (top page) ===== */
+  .scene-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+    gap:14px;
+  }
+  .scene-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:18px;
+    cursor:pointer;
+    box-shadow:var(--shadow);
+    transition:transform var(--transition), border-color var(--transition);
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    text-align:left;
+  }
+  .scene-card:hover{
+    transform:translateY(-2px);
+    border-color:var(--green-300);
+  }
+  .scene-card .scene-icon{
+    font-size:24px;
+  }
+  .scene-card h3{
+    margin:0;
+    font-size:15px;
+    font-weight:700;
+  }
+  .scene-card p{
+    margin:0;
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+  .scene-card .scene-count{
+    margin-top:auto;
+    font-size:11.5px;
+    font-weight:700;
+    color:var(--green-600);
+    background:var(--green-100);
+    border-radius:999px;
+    padding:4px 10px;
+    display:inline-block;
+    width:fit-content;
+  }
+  [data-theme="dark"] .scene-card .scene-count{
+    color:var(--green-700);
+  }
+
+  /* ===== Resource cards ===== */
+  .resource-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+    gap:14px;
+  }
+  .resource-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px 16px 14px;
+    box-shadow:var(--shadow);
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    transition:border-color var(--transition);
+  }
+  .resource-card:hover{
+    border-color:var(--green-300);
+  }
+  .resource-card .card-top{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .module-tag{
+    font-size:11px;
+    font-weight:800;
+    color:var(--green-700);
+    background:var(--green-100);
+    border-radius:6px;
+    padding:3px 8px;
+    flex-shrink:0;
+  }
+  .resource-card h4{
+    margin:0;
+    font-size:14.5px;
+    font-weight:700;
+    line-height:1.4;
+  }
+  .resource-card p{
+    margin:0;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    flex:1;
+  }
+  .card-tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+    margin-top:2px;
+  }
+  .card-tags span{
+    font-size:11px;
+    color:var(--ink-soft);
+    background:var(--surface-soft);
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:2px 8px;
+  }
+  .gamma-btn{
+    margin-top:8px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    background:var(--green-500);
+    color:#fff;
+    border:none;
+    border-radius:9px;
+    padding:9px 14px;
+    font-size:13px;
+    font-weight:700;
+    text-decoration:none;
+    cursor:pointer;
+    transition:background var(--transition), opacity var(--transition);
+  }
+  .gamma-btn:hover{
+    background:var(--green-600);
+  }
+  .gamma-btn.placeholder{
+    background:var(--surface-soft);
+    color:var(--ink-soft);
+    border:1px dashed var(--border);
+  }
+  .gamma-btn.placeholder:hover{
+    background:var(--surface-soft);
+  }
+
+  /* ===== Module list page ===== */
+  .module-group{
+    margin-bottom:18px;
+  }
+  .module-group-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+    padding:14px 16px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    user-select:none;
+  }
+  .module-group-head .module-num-badge{
+    height:28px;
+    min-width:34px;
+    font-size:13px;
+    border-radius:8px;
+  }
+  .module-group-head h3{
+    margin:0;
+    font-size:15px;
+    font-weight:700;
+    flex:1;
+  }
+  .module-group-head .chevron{
+    font-size:13px;
+    color:var(--ink-soft);
+    transition:transform var(--transition);
+  }
+  .module-group-head.open .chevron{
+    transform:rotate(90deg);
+  }
+  .module-group-body{
+    display:none;
+    padding:14px 4px 4px;
+  }
+  .module-group-body.open{
+    display:block;
+  }
+
+  /* Simple (non-collapsible) module card */
+  .module-card{
+    margin-bottom:14px;
+  }
+
+  /* ===== Search results ===== */
+  .search-results{
+    display:none;
+  }
+  .search-results.active{
+    display:block;
+  }
+  .page-section.hidden-by-search{
+    display:none;
+  }
+  .no-results{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:13.5px;
+    padding:40px 0;
+  }
+
+  /* ===== Pages visibility ===== */
+  .page{
+    display:none;
+  }
+  .page.active{
+    display:block;
+  }
+
+  /* ===== Scroll target highlight ===== */
+  .anchor-offset{
+    scroll-margin-top:20px;
+  }
+
+  /* ===== Footer ===== */
+  .footer-note{
+    text-align:center;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:40px;
+    padding-top:18px;
+    border-top:1px solid var(--border);
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width:900px){
+    .sidebar{
+      transform:translateX(-100%);
+      box-shadow:0 0 24px rgba(0,0,0,0.2);
+    }
+    .sidebar.open{
+      transform:translateX(0);
+    }
+    .sidebar-overlay.show{
+      display:block;
+    }
+    .menu-btn{
+      display:flex;
+    }
+    .main{
+      margin-left:0;
+      padding:70px 16px 50px;
+    }
+    .hero{
+      padding:26px 20px;
+    }
+    .hero h1{
+      font-size:20px;
+    }
+    .scene-grid, .resource-grid{
+      grid-template-columns:1fr;
+    }
+  }
+</style>
+</head>
+<body>
+
+<button class="menu-btn" id="menuBtn" aria-label="メニューを開く">
+  ☰ <span>メニュー</span>
+</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="app">
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-frog">🐸</div>
+      <div class="brand-text">
+        かえるサポート
+        <span>ルールガイド</span>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="資料・キーワードを検索">
+    </div>
+
+    <nav class="nav-section">
+      <div class="nav-label">ホーム</div>
+      <button class="nav-link" data-page="home"><span class="nav-icon">🏠</span>ホーム</button>
+    </nav>
+
+    <nav class="nav-section">
+      <div class="nav-label">シーン別ナビ</div>
+      <button class="nav-link" data-page="scene-first"><span class="nav-icon">🐸</span>まず見るべき資料</button>
+      <button class="nav-link" data-page="scene-lost"><span class="nav-icon">🔍</span>迷った時に見る資料</button>
+      <button class="nav-link" data-page="scene-criteria"><span class="nav-icon">📊</span>数値判断・判定基準</button>
+      <button class="nav-link" data-page="scene-trouble"><span class="nav-icon">🚨</span>トラブル時に見る資料</button>
+    </nav>
+
+    <nav class="nav-section">
+      <div class="nav-label">フロー別ナビ</div>
+      <button class="nav-link" data-page="scene-before"><span class="nav-icon">🟢</span>受講開始前に見る資料</button>
+      <button class="nav-link" data-page="scene-routine"><span class="nav-icon">🔁</span>通常運用で見る資料</button>
+      <button class="nav-link" data-page="scene-kms"><span class="nav-icon">🧩</span>KMS関連資料</button>
+      <button class="nav-link" data-page="scene-end"><span class="nav-icon">🔚</span>終了・休止時に見る資料</button>
+    </nav>
+
+    <nav class="nav-section">
+      <div class="nav-label">全体マップ</div>
+      <button class="nav-link" data-page="modules"><span class="nav-icon">📚</span>Module一覧(全体)</button>
+    </nav>
+
+    <nav class="nav-section module-tree" id="sidebarModuleTree">
+      <!-- generated by JS -->
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="theme-toggle" id="themeToggle">
+        <span id="themeLabel">🌙 ダークモード</span>
+        <span id="themeIcon">OFF</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main" id="main">
+
+    <!-- ====== HOME ====== -->
+    <section class="page active" id="page-home">
+      <div class="hero">
+        <div class="hero-frog">🐸</div>
+        <h1>かえるサポート ルールガイド</h1>
+        <p>
+          かえるサポートの運用ルールと共通認識を整理したガイドです。<br>
+          まずはModule0〜12で全体像を把握し、<br>
+          日々の運用の中で必要に応じて見返せるように構成されています。
+        </p>
+        <div class="hero-note">💡 迷った時は「迷った時に見る資料」から立ち返れます</div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <h2>シーンから探す</h2>
+        </div>
+        <p class="section-desc">今の状況に近いカードを選んでください。関連する資料だけが表示されます。</p>
+        <div class="scene-grid">
+          <button class="scene-card" data-page="scene-first">
+            <div class="scene-icon">🐸</div>
+            <h3>まず見るべき資料</h3>
+            <p>最初に確認しておきたい基本セット</p>
+            <span class="scene-count" data-count="scene-first"></span>
+          </button>
+          <button class="scene-card" data-page="scene-lost">
+            <div class="scene-icon">🔍</div>
+            <h3>迷った時に見る資料</h3>
+            <p>判断に迷ったら、まずここを確認</p>
+            <span class="scene-count" data-count="scene-lost"></span>
+          </button>
+          <button class="scene-card" data-page="scene-criteria">
+            <div class="scene-icon">📊</div>
+            <h3>数値判断・判定基準</h3>
+            <p>Lv判定・評価基準などの判断材料</p>
+            <span class="scene-count" data-count="scene-criteria"></span>
+          </button>
+          <button class="scene-card" data-page="scene-trouble">
+            <div class="scene-icon">🚨</div>
+            <h3>トラブル時に見る資料</h3>
+            <p>特殊対応・トラブル予防・強制フローなど</p>
+            <span class="scene-count" data-count="scene-trouble"></span>
+          </button>
+          <button class="scene-card" data-page="scene-before">
+            <div class="scene-icon">🟢</div>
+            <h3>受講開始前に見る資料</h3>
+            <p>申込〜初日までのフローに関する資料</p>
+            <span class="scene-count" data-count="scene-before"></span>
+          </button>
+          <button class="scene-card" data-page="scene-routine">
+            <div class="scene-icon">🔁</div>
+            <h3>通常運用で見る資料</h3>
+            <p>週次サイクルなど、日々の運用に関する資料</p>
+            <span class="scene-count" data-count="scene-routine"></span>
+          </button>
+          <button class="scene-card" data-page="scene-kms">
+            <div class="scene-icon">🧩</div>
+            <h3>KMS関連資料</h3>
+            <p>かえるマッチングアプリストラテジー関連</p>
+            <span class="scene-count" data-count="scene-kms"></span>
+          </button>
+          <button class="scene-card" data-page="scene-end">
+            <div class="scene-icon">🔚</div>
+            <h3>終了・休止時に見る資料</h3>
+            <p>結果後の運用・終了・休止対応に関する資料</p>
+            <span class="scene-count" data-count="scene-end"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <h2>Moduleから探す</h2>
+        </div>
+        <p class="section-desc">全体の構成を確認したい場合は、Module一覧から探すこともできます。</p>
+        <div class="scene-grid">
+          <button class="scene-card" data-page="modules">
+            <div class="scene-icon">📚</div>
+            <h3>Module一覧(0〜12)</h3>
+            <p>全体の構成を確認したい時はこちら</p>
+            <span class="scene-count" data-count="all"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="footer-note">かえるサポート ルールガイド(初期版)</div>
+    </section>
+
+    <!-- ====== SCENE PAGES (generated container) ====== -->
+    <section class="page" id="page-scene-first"></section>
+    <section class="page" id="page-scene-lost"></section>
+    <section class="page" id="page-scene-criteria"></section>
+    <section class="page" id="page-scene-trouble"></section>
+    <section class="page" id="page-scene-before"></section>
+    <section class="page" id="page-scene-routine"></section>
+    <section class="page" id="page-scene-kms"></section>
+    <section class="page" id="page-scene-end"></section>
+
+    <!-- ====== MODULES PAGE ====== -->
+    <section class="page" id="page-modules">
+      <div class="section-header">
+        <h2>📚 Module一覧(全体)</h2>
+      </div>
+      <p class="section-desc">Module0〜12の全資料です。Module7・8・9はサブModuleをまとめた折りたたみ表示になっています。</p>
+      <div id="modulesContainer"></div>
+      <div class="footer-note">かえるサポート ルールガイド(初期版)</div>
+    </section>
+
+    <!-- ====== SEARCH RESULTS ====== -->
+    <section class="page" id="page-search">
+      <div class="section-header">
+        <h2>🔍 検索結果</h2>
+      </div>
+      <p class="section-desc" id="searchSummary"></p>
+      <div class="resource-grid" id="searchResults"></div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+/* =========================================================
+   DATA: 資料(Module/サブModule)定義
+   gammaUrl: "" の場合は「準備中」ボタンを表示
+   scenes: 該当するシーン別ナビのキー配列
+========================================================= */
+const resources = [
+  {
+    id: "m0",
+    moduleLabel: "Module0",
+    title: "かえるサポートとは何か",
+    desc: "かえるサポートの目的・全体像を理解するための基本資料です。",
+    tags: ["基本", "概要"],
+    gammaUrl: "https://gamma.app/docs/-glqj2f45k8w07bc",
+    scenes: ["scene-first"]
+  },
+  {
+    id: "m1",
+    moduleLabel: "Module1",
+    title: "全体像と役割",
+    desc: "サービス全体の流れと、各役割(講師・運営など)の位置づけを把握します。",
+    tags: ["基本", "役割"],
+    gammaUrl: "",
+    scenes: ["scene-first"]
+  },
+  {
+    id: "m2",
+    moduleLabel: "Module2",
+    title: "受講開始前フロー",
+    desc: "申込から受講開始までの流れを確認します。",
+    tags: ["受講開始前", "フロー"],
+    gammaUrl: "",
+    scenes: ["scene-before"]
+  },
+  {
+    id: "m3",
+    moduleLabel: "Module3",
+    title: "目標設定と判定基準",
+    desc: "受講者の目標設定方法と、各種判定基準についての資料です。",
+    tags: ["数値判断", "判定基準", "目標設定"],
+    gammaUrl: "",
+    scenes: ["scene-criteria", "scene-lost", "scene-before"]
+  },
+  {
+    id: "m4",
+    moduleLabel: "Module4",
+    title: "外見改善と撮影",
+    desc: "外見改善の進め方と、撮影に関する基本対応をまとめています。",
+    tags: ["受講開始前", "外見改善", "撮影"],
+    gammaUrl: "",
+    scenes: ["scene-before"]
+  },
+  {
+    id: "m5",
+    moduleLabel: "Module5",
+    title: "担当講師決定と引き継ぎ・Lv判定",
+    desc: "担当講師の決定方法、引き継ぎ手順、Lv判定の進め方を確認します。",
+    tags: ["受講開始前", "Lv判定", "引き継ぎ"],
+    gammaUrl: "",
+    scenes: ["scene-before", "scene-criteria"]
+  },
+  {
+    id: "m6",
+    moduleLabel: "Module6",
+    title: "アプリスタート初日",
+    desc: "アプリ利用開始初日に行うべき対応をまとめた資料です。",
+    tags: ["受講開始前", "初日対応"],
+    gammaUrl: "",
+    scenes: ["scene-before", "scene-first"]
+  },
+
+  // ---- Module7 (sub modules) ----
+  {
+    id: "m7-1",
+    moduleLabel: "Module7-1",
+    parent: "Module7",
+    title: "週次サイクル全体像",
+    desc: "週単位で発生する業務の全体像を把握します。",
+    tags: ["通常運用", "週次"],
+    gammaUrl: "",
+    scenes: ["scene-routine"]
+  },
+  {
+    id: "m7-2",
+    moduleLabel: "Module7-2",
+    parent: "Module7",
+    title: "提出物と日常運用",
+    desc: "提出物の確認方法や日常的な運用業務についての資料です。",
+    tags: ["通常運用", "提出物"],
+    gammaUrl: "",
+    scenes: ["scene-routine"]
+  },
+  {
+    id: "m7-3",
+    moduleLabel: "Module7-3",
+    parent: "Module7",
+    title: "添削ルールと実務運用",
+    desc: "添削時のルールと、実務上の運用方法をまとめています。",
+    tags: ["通常運用", "添削", "迷った時"],
+    gammaUrl: "",
+    scenes: ["scene-routine", "scene-lost"]
+  },
+
+  // ---- Module8 (sub modules: KMS) ----
+  {
+    id: "m8-1",
+    moduleLabel: "Module8-1",
+    parent: "Module8",
+    title: "KMS全体像",
+    desc: "KMS(かえるマッチングアプリストラテジー)の全体像を理解します。",
+    tags: ["KMS", "全体像"],
+    gammaUrl: "",
+    scenes: ["scene-kms", "scene-first"]
+  },
+  {
+    id: "m8-2-1",
+    moduleLabel: "Module8-2①",
+    parent: "Module8",
+    title: "7評価① 土台",
+    desc: "7評価のうち「土台」に関する評価項目を解説します。",
+    tags: ["KMS", "7評価", "判定基準"],
+    gammaUrl: "",
+    scenes: ["scene-kms", "scene-criteria"]
+  },
+  {
+    id: "m8-2-2",
+    moduleLabel: "Module8-2②",
+    parent: "Module8",
+    title: "7評価② 恋愛要素",
+    desc: "7評価のうち「恋愛要素」に関する評価項目を解説します。",
+    tags: ["KMS", "7評価", "判定基準"],
+    gammaUrl: "",
+    scenes: ["scene-kms", "scene-criteria"]
+  },
+  {
+    id: "m8-2-3",
+    moduleLabel: "Module8-2③",
+    parent: "Module8",
+    title: "7評価③ 人間性",
+    desc: "7評価のうち「人間性」に関する評価項目を解説します。",
+    tags: ["KMS", "7評価", "判定基準"],
+    gammaUrl: "",
+    scenes: ["scene-kms", "scene-criteria"]
+  },
+  {
+    id: "m8-3",
+    moduleLabel: "Module8-3",
+    parent: "Module8",
+    title: "フェーズと改善順序",
+    desc: "改善を進める際のフェーズの考え方と優先順位を確認します。",
+    tags: ["KMS", "改善順序", "迷った時"],
+    gammaUrl: "",
+    scenes: ["scene-kms", "scene-lost"]
+  },
+  {
+    id: "m8-4",
+    moduleLabel: "Module8-4",
+    parent: "Module8",
+    title: "KMS実務運用",
+    desc: "KMSを実務でどのように運用するかをまとめた資料です。",
+    tags: ["KMS", "実務運用"],
+    gammaUrl: "",
+    scenes: ["scene-kms", "scene-routine"]
+  },
+
+  // ---- Module9 (sub modules) ----
+  {
+    id: "m9-1",
+    moduleLabel: "Module9-1",
+    parent: "Module9",
+    title: "FF",
+    desc: "FF対応に関する資料です。横断的に発生する対応をまとめています。",
+    tags: ["特殊対応", "トラブル"],
+    gammaUrl: "",
+    scenes: ["scene-trouble"]
+  },
+  {
+    id: "m9-2",
+    moduleLabel: "Module9-2",
+    parent: "Module9",
+    title: "トラブル予防",
+    desc: "トラブルを未然に防ぐための考え方と対応方法です。",
+    tags: ["トラブル予防", "迷った時"],
+    gammaUrl: "",
+    scenes: ["scene-trouble", "scene-lost"]
+  },
+  {
+    id: "m9-3",
+    moduleLabel: "Module9-3",
+    parent: "Module9",
+    title: "強制フロー",
+    desc: "強制フローが発生した際の対応手順を確認します。",
+    tags: ["特殊対応", "トラブル"],
+    gammaUrl: "",
+    scenes: ["scene-trouble"]
+  },
+
+  {
+    id: "m10",
+    moduleLabel: "Module10",
+    title: "結果後の運用と出口",
+    desc: "受講結果が出た後の運用方法と、出口に向けた対応を確認します。",
+    tags: ["終了・休止", "結果後"],
+    gammaUrl: "",
+    scenes: ["scene-end"]
+  },
+  {
+    id: "m11",
+    moduleLabel: "Module11",
+    title: "終了・休止対応",
+    desc: "受講の終了・休止時に必要な対応をまとめた資料です。",
+    tags: ["終了・休止", "対応手順"],
+    gammaUrl: "",
+    scenes: ["scene-end"]
+  },
+  {
+    id: "m12",
+    moduleLabel: "Module12",
+    title: "体制・管理ツール",
+    desc: "運営体制や管理に使用するツールについての資料です。",
+    tags: ["体制", "管理ツール", "基本"],
+    gammaUrl: "",
+    scenes: ["scene-first"]
+  }
+];
+
+/* シーンのメタ情報 */
+const sceneMeta = {
+  "scene-first":    { icon:"🐸", title:"まず見るべき資料",        desc:"最初に確認しておきたい基本的な資料です。" },
+  "scene-lost":     { icon:"🔍", title:"迷った時に見る資料",        desc:"対応や判断に迷ったとき、まず見返すための資料です。" },
+  "scene-criteria": { icon:"📊", title:"数値判断・判定基準",        desc:"Lv判定や評価基準など、数値による判断が必要な場面で使う資料です。" },
+  "scene-trouble":  { icon:"🚨", title:"トラブル時に見る資料",       desc:"特殊対応やトラブル発生時に確認する資料です。" },
+  "scene-before":   { icon:"🟢", title:"受講開始前に見る資料",      desc:"受講開始前(申込〜初日まで)のフローに関する資料です。" },
+  "scene-routine":  { icon:"🔁", title:"通常運用で見る資料",        desc:"週次サイクルなど、日々の運用業務に関する資料です。" },
+  "scene-kms":      { icon:"🧩", title:"KMS関連資料",               desc:"KMS(かえるマッチングアプリストラテジー)に関する資料一式です。" },
+  "scene-end":      { icon:"🔚", title:"終了・休止時に見る資料",     desc:"結果後の運用、終了・休止対応に関する資料です。" }
+};
+
+/* Module7/8/9 のグループ定義(折りたたみ用) */
+const collapsibleGroups = {
+  "Module7": { title:"週次サイクル", items:["m7-1","m7-2","m7-3"] },
+  "Module8": { title:"KMS(かえるマッチングアプリストラテジー)", items:["m8-1","m8-2-1","m8-2-2","m8-2-3","m8-3","m8-4"] },
+  "Module9": { title:"横断対応・特殊ケース", items:["m9-1","m9-2","m9-3"] }
+};
+
+/* 通常Module(折りたたみ不要) */
+const standaloneModules = ["m0","m1","m2","m3","m4","m5","m6","m10","m11","m12"];
+
+
+/* =========================================================
+   ヘルパー: 資料カードHTML生成
+========================================================= */
+function gammaButtonHtml(url){
+  if(url && url.trim() !== ""){
+    return `<a class="gamma-btn" href="${url}" target="_blank" rel="noopener">Gammaで開く ↗</a>`;
+  }
+  return `<span class="gamma-btn placeholder" title="Gamma URLは準備中です">Gammaで開く(準備中)</span>`;
+}
+
+function resourceCardHtml(r){
+  const tags = r.tags.map(t => `<span>${t}</span>`).join("");
+  return `
+    <div class="resource-card" data-id="${r.id}">
+      <div class="card-top">
+        <span class="module-tag">${r.moduleLabel}</span>
+      </div>
+      <h4>${r.title}</h4>
+      <p>${r.desc}</p>
+      <div class="card-tags">${tags}</div>
+      ${gammaButtonHtml(r.gammaUrl)}
+    </div>
+  `;
+}
+
+/* =========================================================
+   シーン別ページ生成
+========================================================= */
+function renderScenePages(){
+  Object.keys(sceneMeta).forEach(key => {
+    const meta = sceneMeta[key];
+    const items = resources.filter(r => r.scenes.includes(key));
+    const container = document.getElementById(`page-${key}`);
+    container.innerHTML = `
+      <div class="section-header">
+        <h2>${meta.icon} ${meta.title}</h2>
+      </div>
+      <p class="section-desc">${meta.desc}</p>
+      <div class="resource-grid">
+        ${items.map(resourceCardHtml).join("")}
+      </div>
+      <div class="footer-note">かえるサポート ルールガイド(初期版)</div>
+    `;
+  });
+}
+
+/* シーンごとの件数をトップページのバッジに反映 */
+function renderSceneCounts(){
+  document.querySelectorAll(".scene-count").forEach(el => {
+    const key = el.getAttribute("data-count");
+    if(key === "all"){
+      el.textContent = `${resources.length}資料`;
+    } else {
+      const count = resources.filter(r => r.scenes.includes(key)).length;
+      el.textContent = `${count}資料`;
+    }
+  });
+}
+
+/* =========================================================
+   Module一覧ページ生成
+========================================================= */
+function renderModulesPage(){
+  const container = document.getElementById("modulesContainer");
+  let html = "";
+
+  // 折りたたみグループ(Module7/8/9)を含めて順序通りに表示するため、
+  // standaloneとgroupを定義順で混在させる
+  const order = [
+    {type:"single", id:"m0"},
+    {type:"single", id:"m1"},
+    {type:"single", id:"m2"},
+    {type:"single", id:"m3"},
+    {type:"single", id:"m4"},
+    {type:"single", id:"m5"},
+    {type:"single", id:"m6"},
+    {type:"group",  key:"Module7", label:"Module7"},
+    {type:"group",  key:"Module8", label:"Module8"},
+    {type:"group",  key:"Module9", label:"Module9"},
+    {type:"single", id:"m10"},
+    {type:"single", id:"m11"},
+    {type:"single", id:"m12"}
+  ];
+
+  order.forEach(entry => {
+    if(entry.type === "single"){
+      const r = resources.find(x => x.id === entry.id);
+      html += `<div class="module-card">${resourceCardHtml(r)}</div>`;
+    } else {
+      const group = collapsibleGroups[entry.key];
+      const items = group.items.map(id => resources.find(x => x.id === id));
+      html += `
+        <div class="module-group">
+          <div class="module-group-head" data-group="${entry.key}">
+            <span class="module-num-badge">${entry.key.replace("Module","")}</span>
+            <h3>${entry.key}:${group.title}</h3>
+            <span class="chevron">▶</span>
+          </div>
+          <div class="module-group-body" data-group-body="${entry.key}">
+            <div class="resource-grid">
+              ${items.map(resourceCardHtml).join("")}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  });
+
+  container.innerHTML = html;
+
+  // 折りたたみイベント
+  container.querySelectorAll(".module-group-head").forEach(head => {
+    head.addEventListener("click", () => {
+      const key = head.getAttribute("data-group");
+      const body = container.querySelector(`[data-group-body="${key}"]`);
+      head.classList.toggle("open");
+      body.classList.toggle("open");
+    });
+  });
+}
+
+/* =========================================================
+   サイドバー Module ツリー生成
+========================================================= */
+function renderSidebarModuleTree(){
+  const container = document.getElementById("sidebarModuleTree");
+  let html = `<div class="nav-label">Module一覧</div>`;
+
+  const order = [
+    {type:"single", id:"m0", label:"Module0", title:"かえるサポートとは"},
+    {type:"single", id:"m1", label:"Module1", title:"全体像と役割"},
+    {type:"single", id:"m2", label:"Module2", title:"受講開始前フロー"},
+    {type:"single", id:"m3", label:"Module3", title:"目標設定と判定基準"},
+    {type:"single", id:"m4", label:"Module4", title:"外見改善と撮影"},
+    {type:"single", id:"m5", label:"Module5", title:"担当講師決定・引き継ぎ・Lv判定"},
+    {type:"single", id:"m6", label:"Module6", title:"アプリスタート初日"},
+    {type:"group",  key:"Module7", label:"Module7", title:"週次サイクル"},
+    {type:"group",  key:"Module8", label:"Module8", title:"KMS"},
+    {type:"group",  key:"Module9", label:"Module9", title:"横断対応・特殊ケース"},
+    {type:"single", id:"m10", label:"Module10", title:"結果後の運用と出口"},
+    {type:"single", id:"m11", label:"Module11", title:"終了・休止対応"},
+    {type:"single", id:"m12", label:"Module12", title:"体制・管理ツール"}
+  ];
+
+  order.forEach(entry => {
+    if(entry.type === "single"){
+      html += `
+        <a class="nav-link" href="#" data-page="modules" data-target="${entry.id}">
+          <span class="module-num-badge">${entry.label.replace("Module","")}</span>
+          <span style="font-size:12.5px;">${entry.title}</span>
+        </a>
+      `;
+    } else {
+      const group = collapsibleGroups[entry.key];
+      html += `
+        <button class="module-toggle" data-sidebar-group="${entry.key}">
+          <span class="module-num-badge">${entry.label.replace("Module","")}</span>
+          <span>${entry.title}</span>
+          <span class="chevron">▶</span>
+        </button>
+        <div class="submodule-list" data-sidebar-group-body="${entry.key}">
+          ${group.items.map(id => {
+            const r = resources.find(x => x.id === id);
+            return `<a href="#" data-page="modules" data-target="${id}">${r.moduleLabel} ${r.title}</a>`;
+          }).join("")}
+        </div>
+      `;
+    }
+  });
+
+  container.innerHTML = html;
+
+  // サイドバー内の折りたたみ
+  container.querySelectorAll(".module-toggle").forEach(toggle => {
+    toggle.addEventListener("click", () => {
+      const key = toggle.getAttribute("data-sidebar-group");
+      const body = container.querySelector(`[data-sidebar-group-body="${key}"]`);
+      toggle.classList.toggle("open");
+      body.classList.toggle("open");
+    });
+  });
+}
+
+/* =========================================================
+   ページ切り替え
+========================================================= */
+function showPage(pageId, targetId){
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  const page = document.getElementById(`page-${pageId}`);
+  if(page) page.classList.add("active");
+
+  // active状態のナビ更新
+  document.querySelectorAll(".nav-link").forEach(link => {
+    link.classList.toggle("active", link.getAttribute("data-page") === pageId);
+  });
+
+  // モバイル: ページ切り替え時にサイドバーを閉じる
+  closeSidebarMobile();
+
+  // モジュール一覧で特定モジュールにジャンプする場合
+  if(pageId === "modules" && targetId){
+    // グループに含まれる場合は開く
+    Object.keys(collapsibleGroups).forEach(groupKey => {
+      if(collapsibleGroups[groupKey].items.includes(targetId)){
+        const head = document.querySelector(`.module-group-head[data-group="${groupKey}"]`);
+        const body = document.querySelector(`[data-group-body="${groupKey}"]`);
+        if(head && !head.classList.contains("open")){
+          head.classList.add("open");
+          body.classList.add("open");
+        }
+      }
+    });
+    setTimeout(() => {
+      const card = document.querySelector(`#page-modules [data-id="${targetId}"]`);
+      if(card){
+        card.scrollIntoView({behavior:"smooth", block:"center"});
+        card.style.transition = "box-shadow 0.3s ease";
+        card.style.boxShadow = "0 0 0 3px var(--green-300)";
+        setTimeout(() => { card.style.boxShadow = ""; }, 1400);
+      }
+    }, 80);
+  } else {
+    window.scrollTo({top:0, behavior:"instant"});
+  }
+
+  // 検索結果ページから戻る際は検索ボックスをクリア
+  if(pageId !== "search"){
+    // do nothing, keep search text as-is for convenience
+  }
+}
+
+/* ナビクリックのイベント設定 */
+function bindNav(){
+  document.body.addEventListener("click", (e) => {
+    const navEl = e.target.closest("[data-page]");
+    if(!navEl) return;
+    e.preventDefault();
+    const pageId = navEl.getAttribute("data-page");
+    const targetId = navEl.getAttribute("data-target");
+    showPage(pageId, targetId);
+  });
+}
+
+/* =========================================================
+   検索機能
+========================================================= */
+function performSearch(query){
+  query = query.trim().toLowerCase();
+
+  if(query === ""){
+    // 検索が空ならホームに戻す(直前のページ保持はしない簡易仕様)
+    showPage("home");
+    return;
+  }
+
+  const results = resources.filter(r => {
+    const haystack = [
+      r.moduleLabel,
+      r.title,
+      r.desc,
+      ...(r.tags || [])
+    ].join(" ").toLowerCase();
+    return haystack.includes(query);
+  });
+
+  const resultContainer = document.getElementById("searchResults");
+  const summary = document.getElementById("searchSummary");
+
+  summary.textContent = `「${query}」の検索結果:${results.length}件`;
+
+  if(results.length === 0){
+    resultContainer.innerHTML = `<div class="no-results">該当する資料が見つかりませんでした。キーワードを変えてお試しください。</div>`;
+  } else {
+    resultContainer.innerHTML = results.map(resourceCardHtml).join("");
+  }
+
+  showPage("search");
+}
+
+function bindSearch(){
+  const input = document.getElementById("searchInput");
+  let debounceTimer;
+  input.addEventListener("input", () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      performSearch(input.value);
+    }, 180);
+  });
+  input.addEventListener("keydown", (e) => {
+    if(e.key === "Enter"){
+      e.preventDefault();
+      performSearch(input.value);
+    }
+  });
+}
+
+/* =========================================================
+   ダークモード
+========================================================= */
+function initTheme(){
+  const toggle = document.getElementById("themeToggle");
+  const label = document.getElementById("themeLabel");
+  const icon = document.getElementById("themeIcon");
+
+  function applyTheme(theme){
+    if(theme === "dark"){
+      document.documentElement.setAttribute("data-theme","dark");
+      label.textContent = "☀️ ライトモード";
+      icon.textContent = "ON";
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+      label.textContent = "🌙 ダークモード";
+      icon.textContent = "OFF";
+    }
+  }
+
+  let saved = "light";
+  try{
+    saved = localStorage.getItem("kaeru-theme") || "light";
+  }catch(e){ /* ignore storage errors */ }
+  applyTheme(saved);
+
+  toggle.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+    const next = current === "dark" ? "light" : "dark";
+    applyTheme(next);
+    try{
+      localStorage.setItem("kaeru-theme", next);
+    }catch(e){ /* ignore storage errors */ }
+  });
+}
+
+/* =========================================================
+   モバイルサイドバー
+========================================================= */
+function initMobileSidebar(){
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("sidebarOverlay");
+  const menuBtn = document.getElementById("menuBtn");
+
+  menuBtn.addEventListener("click", () => {
+    sidebar.classList.add("open");
+    overlay.classList.add("show");
+  });
+  overlay.addEventListener("click", () => {
+    closeSidebarMobile();
+  });
+}
+function closeSidebarMobile(){
+  document.getElementById("sidebar").classList.remove("open");
+  document.getElementById("sidebarOverlay").classList.remove("show");
+}
+
+/* =========================================================
+   初期化
+========================================================= */
+document.addEventListener("DOMContentLoaded", () => {
+  renderScenePages();
+  renderSceneCounts();
+  renderModulesPage();
+  renderSidebarModuleTree();
+  bindNav();
+  bindSearch();
+  initTheme();
+  initMobileSidebar();
+  showPage("home");
+});
+</script>
+
+</body>
+</html>
