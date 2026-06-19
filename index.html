@@ -911,66 +911,26 @@ const resources = [
     scenes: ["scene-routine", "scene-lost"]
   },
 
-  // ---- Module8 (sub modules: KMS) ----
+  // ---- Module8 (KMS) ----
   {
     id: "m8-1",
     moduleLabel: "Module8-1",
     parent: "Module8",
-    title: "KMS全体像",
+    title: "KMS（かえるマッチングアプリストラテジー）",
     desc: "KMS(かえるマッチングアプリストラテジー)の全体像を理解します。",
     tags: ["KMS", "全体像"],
-    gammaUrl: "",
+    gammaUrl: "https://gamma.app/docs/q7kkwuz6ucn05bq",
     scenes: ["scene-kms", "scene-first"]
   },
   {
-    id: "m8-2-1",
-    moduleLabel: "Module8-2①",
+    id: "m8-2",
+    moduleLabel: "Module8-2",
     parent: "Module8",
-    title: "7評価① 土台",
-    desc: "7評価のうち「土台」に関する評価項目を解説します。",
+    title: "KMS 7評価",
+    desc: "KMSにおける7評価の詳細を解説します。",
     tags: ["KMS", "7評価", "判定基準"],
     gammaUrl: "",
     scenes: ["scene-kms", "scene-criteria"]
-  },
-  {
-    id: "m8-2-2",
-    moduleLabel: "Module8-2②",
-    parent: "Module8",
-    title: "7評価② 恋愛要素",
-    desc: "7評価のうち「恋愛要素」に関する評価項目を解説します。",
-    tags: ["KMS", "7評価", "判定基準"],
-    gammaUrl: "",
-    scenes: ["scene-kms", "scene-criteria"]
-  },
-  {
-    id: "m8-2-3",
-    moduleLabel: "Module8-2③",
-    parent: "Module8",
-    title: "7評価③ 人間性",
-    desc: "7評価のうち「人間性」に関する評価項目を解説します。",
-    tags: ["KMS", "7評価", "判定基準"],
-    gammaUrl: "",
-    scenes: ["scene-kms", "scene-criteria"]
-  },
-  {
-    id: "m8-3",
-    moduleLabel: "Module8-3",
-    parent: "Module8",
-    title: "フェーズと改善順序",
-    desc: "改善を進める際のフェーズの考え方と優先順位を確認します。",
-    tags: ["KMS", "改善順序", "迷った時"],
-    gammaUrl: "",
-    scenes: ["scene-kms", "scene-lost"]
-  },
-  {
-    id: "m8-4",
-    moduleLabel: "Module8-4",
-    parent: "Module8",
-    title: "KMS実務運用",
-    desc: "KMSを実務でどのように運用するかをまとめた資料です。",
-    tags: ["KMS", "実務運用"],
-    gammaUrl: "",
-    scenes: ["scene-kms", "scene-routine"]
   },
 
   // ---- Module9 (sub modules) ----
@@ -1048,7 +1008,7 @@ const sceneMeta = {
 
 /* Module7/8/9 のグループ定義(折りたたみ用) */
 const collapsibleGroups = {
-  "Module8": { title:"KMS(かえるマッチングアプリストラテジー)", items:["m8-1","m8-2-1","m8-2-2","m8-2-3","m8-3","m8-4"] },
+  "Module8": { title:"KMS(かえるマッチングアプリストラテジー)", items:["m8-1","m8-2"] },
   "Module9": { title:"横断対応・特殊ケース", items:["m9-1","m9-2","m9-3"] }
 };
 
