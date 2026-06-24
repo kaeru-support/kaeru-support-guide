@@ -956,13 +956,24 @@ const resources = [
   },
 
   {
-    id: "m10",
-    moduleLabel: "Module10",
+    id: "m10-1",
+    moduleLabel: "Module10-1",
+    parent: "Module10",
     title: "結果後の運用と出口",
     desc: "受講結果が出た後の運用方法と、出口に向けた対応を確認します。",
     tags: ["終了・休止", "結果後"],
     gammaUrl: "https://gamma.app/docs/yg2757pwzyxfw0q",
     scenes: ["scene-end"]
+  },
+  {
+    id: "m10-2",
+    moduleLabel: "Module10-2",
+    parent: "Module10",
+    title: "手放しフロー・強制フローと終了判断",
+    desc: "手放しフロー・強制フローが発生した際の終了判断について確認します。",
+    tags: ["終了・休止", "強制フロー", "手放し"],
+    gammaUrl: "https://gamma.app/docs/jwyp7j8y34my4hb",
+    scenes: ["scene-end", "scene-trouble"]
   },
   {
     id: "m11",
@@ -999,11 +1010,12 @@ const sceneMeta = {
 /* Module7/8/9 のグループ定義(折りたたみ用) */
 const collapsibleGroups = {
   "Module8": { title:"KMS(かえるマッチングアプリストラテジー)", items:["m8-1","m8-2"] },
-  "Module9": { title:"横断対応・特殊ケース | FF（Follow Flow）", items:["m9-1","m9-2"] }
+  "Module9": { title:"横断対応・特殊ケース | FF（Follow Flow）", items:["m9-1","m9-2"] },
+  "Module10": { title:"結果後の運用と出口", items:["m10-1","m10-2"] }
 };
 
 /* 通常Module(折りたたみ不要) */
-const standaloneModules = ["m0","m1","m2","m3","m4","m5","m6","m7","m10","m11","m12"];
+const standaloneModules = ["m0","m1","m2","m3","m4","m5","m6","m7","m11","m12"];
 
 
 /* =========================================================
@@ -1085,7 +1097,7 @@ function renderModulesPage(){
     {type:"single", id:"m7"},
     {type:"group",  key:"Module8", label:"Module8"},
     {type:"group",  key:"Module9", label:"Module9"},
-    {type:"single", id:"m10"},
+    {type:"group",  key:"Module10", label:"Module10"},
     {type:"single", id:"m11"},
     {type:"single", id:"m12"}
   ];
@@ -1145,7 +1157,7 @@ function renderSidebarModuleTree(){
     {type:"single", id:"m7", label:"Module7", title:"週次サイクル:添削ルールと実務運用"},
     {type:"group",  key:"Module8", label:"Module8", title:"KMS"},
     {type:"group",  key:"Module9", label:"Module9", title:"横断対応・特殊ケース"},
-    {type:"single", id:"m10", label:"Module10", title:"結果後の運用と出口"},
+    {type:"group",  key:"Module10", label:"Module10", title:"結果後の運用と出口"},
     {type:"single", id:"m11", label:"Module11", title:"終了・休止対応"},
     {type:"single", id:"m12", label:"Module12", title:"体制・管理ツール"}
   ];
