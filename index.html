@@ -978,10 +978,10 @@ const resources = [
   {
     id: "m11",
     moduleLabel: "Module11",
-    title: "終了・休止対応",
-    desc: "受講の終了・休止時に必要な対応をまとめた資料です。",
-    tags: ["終了・休止", "対応手順"],
-    gammaUrl: "",
+    title: "終了フロー｜休止・復活フロー",
+    desc: "受講の終了フロー・休止フロー・復活フローに必要な対応をまとめた資料です。",
+    tags: ["終了・休止", "終了フロー", "休止", "復活"],
+    gammaUrl: "https://gamma.app/docs/jwyp7j8y34my4hb",
     scenes: ["scene-end"]
   },
   {
@@ -1011,7 +1011,7 @@ const sceneMeta = {
 const collapsibleGroups = {
   "Module8": { title:"KMS(かえるマッチングアプリストラテジー)", items:["m8-1","m8-2"] },
   "Module9": { title:"横断対応・特殊ケース | FF（Follow Flow）", items:["m9-1","m9-2"] },
-  "Module10": { title:"結果後の運用と出口", items:["m10-1","m10-2"] }
+  "Module10": { title:"結果後の運用と出口 | 手放し・強制フロー", items:["m10-1","m10-2"] }
 };
 
 /* 通常Module(折りたたみ不要) */
@@ -1157,7 +1157,7 @@ function renderSidebarModuleTree(){
     {type:"single", id:"m7", label:"Module7", title:"週次サイクル:添削ルールと実務運用"},
     {type:"group",  key:"Module8", label:"Module8", title:"KMS"},
     {type:"group",  key:"Module9", label:"Module9", title:"横断対応・特殊ケース"},
-    {type:"group",  key:"Module10", label:"Module10", title:"結果後の運用と出口"},
+    {type:"group",  key:"Module10", label:"Module10", title:"結果後の運用と出口 | 手放し・強制フロー"},
     {type:"single", id:"m11", label:"Module11", title:"終了・休止対応"},
     {type:"single", id:"m12", label:"Module12", title:"体制・管理ツール"}
   ];
